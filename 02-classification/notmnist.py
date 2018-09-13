@@ -241,7 +241,14 @@ def find_overlap(set1, set1_labels, set2, set2_labels):
 # find_overlap(train_dataset, train_labels, valid_dataset, valid_labels)
 
 X_valid = valid_dataset.reshape(len(valid_dataset), len(valid_dataset[0])**2)
-for train_examples_count in [50, 100, 1000, 5000, 20000, len(train_dataset)]:
+for train_examples_count in [
+    50, 100, 1000, 5000,
+    20000,
+    # enable all train set to achieve highest score
+    #       [Parallel(n_jobs=1)]: Done   1 out of   1 | elapsed: 14.4min finished
+    #       0.828
+    # len(train_dataset)
+]:
     # Train
     logit = LogisticRegression(multi_class='multinomial', solver='lbfgs', random_state=42, verbose=1, max_iter=1000, n_jobs=1)
     small_train_data = train_dataset[:train_examples_count]
