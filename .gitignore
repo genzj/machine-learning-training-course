@@ -138,3 +138,7 @@ tags
 .ipynb_checkpoints/
 
 logs/
+/imagenet/
+/mnist-data/
+!/imagenet/.gitkeep
+!/mnist-data/.gitkeep
