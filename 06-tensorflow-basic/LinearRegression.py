@@ -8,7 +8,7 @@ from tensorflow.python.framework import ops
 import warnings
 
 warnings.filterwarnings("ignore")
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 ops.reset_default_graph()
 
 # Create 1000 points following a function y=0.1 * x + 0.4 (i.e. y = W * x + b) with some normal random distribution
@@ -39,7 +39,7 @@ plot.show()
 # tf.name_scope organize things on the tensorboard graph view
 with tf.name_scope("LinearRegression") as scope:
     X = tf.placeholder(x_train.dtype, [None, 1], name='X')  # takes any number of rows but n_dim columns
-    Y = tf.placeholder(x_train.dtype, [None, 1], name='Y')  # #takes any number of rows but only 1 continuous column
+    Y = tf.placeholder(y_train.dtype, [None, 1], name='Y')  # #takes any number of rows but only 1 continuous column
     W = tf.Variable(tf.zeros([1]), name='W')
     b = tf.Variable(tf.zeros([1]), name='b')
     y = W * X + b
@@ -67,7 +67,8 @@ sess.run(init)
 writer_tensorboard = tf.summary.FileWriter('logs/', tf.get_default_graph())
 
 for i in range(6):
-    sess.run(train, feed_dict={X: x_train, Y: y_train})
+    _, summary = sess.run([train, merged_op], feed_dict={X: x_train, Y: y_train})
+    writer_tensorboard.add_summary(summary, i)
     print(
         i,
         sess.run(W, feed_dict={X: x_train, Y: y_train}),
