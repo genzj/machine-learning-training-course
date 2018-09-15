@@ -103,5 +103,5 @@ with tf.Session() as sess:
             writer.add_summary(summary, epoch * batch_count + i)
         print("Epoch: ", epoch)
 
-    print("Accuracy: ", accuracy.eval(feed_dict={X: mnist.test.images, Y_: mnist.test.labels, pkeep: 0.75}))
+    print("Accuracy: ", accuracy.eval(feed_dict={X: mnist.test.images, Y_: mnist.test.labels, pkeep: 1.0}))
     print("done")
