@@ -240,9 +240,14 @@ def find_overlap(set1, set1_labels, set2, set2_labels):
 
 # find_overlap(train_dataset, train_labels, valid_dataset, valid_labels)
 
+alpha = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
+
+test_png = (ndimage.imread('./test.png').astype(float) - pixel_depth / 2) / pixel_depth
+
 X_valid = valid_dataset.reshape(len(valid_dataset), len(valid_dataset[0])**2)
 for train_examples_count in [
-    50, 100, 1000, 5000,
+    50, 100,
+    1000, 5000,
     20000,
     # enable all train set to achieve highest score
     #       [Parallel(n_jobs=1)]: Done   1 out of   1 | elapsed: 14.4min finished
@@ -250,20 +255,20 @@ for train_examples_count in [
     # len(train_dataset)
 ]:
     # Train
-    logit = LogisticRegression(multi_class='multinomial', solver='lbfgs', random_state=42, verbose=1, max_iter=1000, n_jobs=1)
+    logit = LogisticRegression(multi_class='multinomial', solver='saga', random_state=42, verbose=0, max_iter=1000, n_jobs=1)
     small_train_data = train_dataset[:train_examples_count]
     small_train_lbl = train_labels[:train_examples_count]
     # Each Letter is a 28*28 pixel image. Convert 28*28 matrix to a 1*784 array. Do this for all images
     X_train = small_train_data.reshape(len(small_train_data), len(small_train_data[0]) * len(small_train_data[0]))
     logit.fit(X_train, small_train_lbl)
     print(logit.score(X_valid, valid_labels))
+    test_label = logit.predict(test_png.reshape(1, -1))
+    print('label of test.png is:', alpha[test_label[0]])
 
 # prediction
 
 X_test = test_dataset.reshape(len(test_dataset), len(test_dataset[0]) * len(test_dataset[0]))
 pred_lst = [(logit.predict(row.reshape(1, -1)))[0] for row in X_test]
-
-alpha = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
 
 for i in range(len(pred_lst)):
     correct = test_labels[i] == pred_lst[i]
